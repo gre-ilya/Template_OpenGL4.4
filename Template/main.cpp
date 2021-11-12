@@ -1,7 +1,8 @@
 #include <iostream>
-
+#include <fstream>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <ShaderProgram/ShaderProgram.h>
 
 using std::cout;
 using std::endl;
@@ -12,6 +13,8 @@ void processInput(GLFWwindow* window);
 
 int main()
 {
+	std::ofstream logger("..\\logs.txt");
+
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
@@ -19,7 +22,7 @@ int main()
 
 	GLFWwindow* main_window = glfwCreateWindow(1600, 900, "Main window", 0, 0);
 	if (main_window == 0) {
-		cout << "ERROR::Failed to create window" << endl;
+		logger << "main.cpp::Failed to create window" << endl;
 		glfwTerminate();
 		return -1;
 	}
@@ -27,7 +30,7 @@ int main()
 	glfwSetFramebufferSizeCallback(main_window, framebuffer_size_callback);
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-		cout << "ERROR::Failed to load GLAD" << endl;
+		logger << "main.cpp::Failed to load GLAD" << endl;
 		return -1;
 	}
 
@@ -41,6 +44,7 @@ int main()
 		glfwSwapBuffers(main_window);
 		glfwPollEvents();
 	}
+
 
 	glfwTerminate();
 	return 0;
