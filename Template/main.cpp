@@ -7,36 +7,29 @@
 using std::cout;
 using std::endl;
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void processInput(GLFWwindow* window);
-
+void initGlfw();
+GLFWwindow* createWindow(std::ofstream& logger);
+void handleInput(GLFWwindow* window);
 
 int main()
 {
 	std::ofstream logger("logs.txt");
 
-	glfwInit();
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-	GLFWwindow* main_window = glfwCreateWindow(1600, 900, "Main window", 0, 0);
-	if (main_window == 0) {
-		logger << "main.cpp::Failed to create window" << endl;
-		glfwTerminate();
+	initGlfw();
+	GLFWwindow* main_window = createWindow(logger);
+	if (!main_window) {
 		return -1;
 	}
-	glfwMakeContextCurrent(main_window);
-	glfwSetFramebufferSizeCallback(main_window, framebuffer_size_callback);
-
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
 		logger << "main.cpp::Failed to load GLAD" << endl;
 		return -1;
 	}
-
 	glViewport(0, 0, 1600, 900);
+	/*
+		CODE HERE!
+	*/
 	while (!glfwWindowShouldClose(main_window)) {
-		processInput(main_window);
+		handleInput(main_window);
 
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -50,13 +43,35 @@ int main()
 	return 0;
 }
 
-void processInput(GLFWwindow* window)
+void initGlfw()
 {
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, true);
+	glfwInit();
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
 	glViewport(0, 0, width, height);
 }
+
+GLFWwindow* createWindow(std::ofstream& logger)
+{
+	GLFWwindow* main_window = glfwCreateWindow(1600, 900, "Main window", 0, 0);
+	if (main_window == 0) {
+		logger << "main.cpp::Failed to create window" << endl;
+		glfwTerminate();
+		return 0;
+	}
+	glfwMakeContextCurrent(main_window);
+	glfwSetFramebufferSizeCallback(main_window, framebuffer_size_callback);
+	return main_window;
+}
+
+void handleInput(GLFWwindow* window)
+{
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+		glfwSetWindowShouldClose(window, true);
+}
+
