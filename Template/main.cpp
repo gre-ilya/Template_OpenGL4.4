@@ -13,7 +13,7 @@ void processInput(GLFWwindow* window);
 
 int main()
 {
-	std::ofstream logger("..\\logs.txt");
+	std::ofstream logger("logs.txt");
 
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
