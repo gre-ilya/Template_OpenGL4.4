@@ -33,6 +33,11 @@ void ShaderProgram::setProgramName(std::string new_name)
 	program_name = new_name;
 }
 
+GLuint ShaderProgram::getProgramId()
+{
+	return program_id;
+}
+
 std::string ShaderProgram::fileToString(const char* path_to_source)
 {
 	// string for return
@@ -57,10 +62,13 @@ std::string ShaderProgram::fileToString(const char* path_to_source)
 GLuint ShaderProgram::createAndCompileShader(GLenum shader_type, 
 	const char* src, std::ofstream& logger) const
 {
-	const char* code = fileToString(src).c_str();
+	std::string tmp = fileToString(src);
+	const char* code = tmp.c_str();
+	const GLint* sz = new const GLint(tmp.size());
 	// check "" !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	GLuint shader = glCreateShader(shader_type);
-	glShaderSource(shader, 1, &code, 0);
+	glShaderSource(shader, 1, &code, sz);
+	delete(sz);
 	glCompileShader(shader);
 	this->logShader(shader, logger);
 	return shader;
@@ -77,6 +85,8 @@ void ShaderProgram::createProgram(GLuint vertex_shader,
 
 	// print logs and delete given shaders
 	logProgram(program_id, logger);
+	glDetachShader(program_id, vertex_shader);
+	glDetachShader(program_id, fragment_shader);
 	glDeleteShader(vertex_shader);
 	glDeleteShader(fragment_shader); 
 }

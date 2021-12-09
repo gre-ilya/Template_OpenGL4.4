@@ -60,6 +60,8 @@ public:
 	std::string getProgramName();
 
 	void setProgramName(std::string new_name);
+
+	GLuint getProgramId();
 };
 
 #endif
