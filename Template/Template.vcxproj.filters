@@ -28,6 +28,9 @@
     <Filter Include="Header Files\Shader">
       <UniqueIdentifier>{4633d346-b693-48ba-b22f-3a03aea9a259}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Matrix">
+      <UniqueIdentifier>{decdad2f-ea7f-41ba-9221-5ef47b920876}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -124,6 +127,9 @@
     </ClInclude>
     <ClInclude Include="..\include\Shader\ShaderProgram.h">
       <Filter>Header Files\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Matrix.h">
+      <Filter>Header Files\Matrix</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
