@@ -132,4 +132,12 @@
       <Filter>Header Files\Matrix</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="shader.fs">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="shader.vs">
+      <Filter>Source Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>

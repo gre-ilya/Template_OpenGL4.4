@@ -3,27 +3,13 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <ShaderProgram/ShaderProgram.h>
-#include "Matrix/Matrix.h"
+#include "Matrix.h"
 
 using namespace std;
 
 const int WIDTH = 1600, HEIGHT = 900;
 
-struct Vector3f {
-	float x, y, z;
 
-	Vector3f() {
-		x = 0;
-		y = 0;
-		z = 0;
-	}
-
-	Vector3f(float _x, float _y, float _z) {
-		x = _x;
-		y = _y;
-		z = _z;
-	}
-};
 
 void initGlfw()
 {
@@ -62,9 +48,9 @@ GLFWwindow* createWindow(ofstream& logger)
 void createVertexBuffer(GLuint& VBO)
 {
 	Vector3f vertices[3];
-	vertices[0] = Vector3f(-1.0f, -1.0f, 0.0f);
-	vertices[1] = Vector3f(1.0f, -1.0f, 0.0f);
-	vertices[2] = Vector3f(0.0f, 1.0f, 0.0f);
+	vertices[0] = Vector3f(-0.5f, -0.5f, 0.0f);
+	vertices[1] = Vector3f(0.5f, -0.5f, 0.0f);
+	vertices[2] = Vector3f(0.0f, 0.5f, 0.0f);
 
 	glGenBuffers(1, &VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
@@ -77,14 +63,20 @@ void createArrayBuffer(GLuint& VAO)
 	glBindVertexArray(VAO);
 }
 
-void renderScene(GLFWwindow* window, GLuint& VBO, GLuint& gScaleLocation)
+void renderScene(GLFWwindow* window, GLuint& VBO, GLuint& gWorldLocation)
 {
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	static float Scale = 0.0f;
 	Scale += 0.001f;
+
+	Matrix4f World;
+    World.m[0][0] = 1.0f; World.m[0][1] = 0.0f; World.m[0][2] = 0.0f; World.m[0][3] = sinf(Scale);
+    World.m[1][0] = 0.0f; World.m[1][1] = 1.0f; World.m[1][2] = 0.0f; World.m[1][3] = 0.0f;
+    World.m[2][0] = 0.0f; World.m[2][1] = 0.0f; World.m[2][2] = 1.0f; World.m[2][3] = 0.0f;
+    World.m[3][0] = 0.0f; World.m[3][1] = 0.0f; World.m[3][2] = 0.0f; World.m[3][3] = 1.0f;
 	
-	glUniform1f(gScaleLocation, sinf(Scale));
+	glUniformMatrix4fv(gWorldLocation, 1, GL_TRUE, &World.m[0][0]);
 
 	glEnableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
@@ -122,14 +114,14 @@ int main()
 	createArrayBuffer(VAO);
 
 	ShaderProgram shaderProgram("shader", "shader.vs", "shader.fs", logger);
-	GLuint gScaleLocation = glGetUniformLocation(shaderProgram.getProgramId(), "gScale");
-	if (gScaleLocation == 0xFFFFFFFF) {
+	GLuint gWorldLocation = glGetUniformLocation(shaderProgram.getProgramId(), "gWorld");
+	if (gWorldLocation == 0xFFFFFFFF) {
 		logger << "FAILURE::Uniform not found" << endl;
 	}
 	shaderProgram.use();
 
 	while (!glfwWindowShouldClose(main_window)) {
-		renderScene(main_window, VBO, gScaleLocation);
+		renderScene(main_window, VBO, gWorldLocation);
 		glfwPollEvents();
 	}
 
